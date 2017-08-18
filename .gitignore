@@ -24,3 +24,5 @@ hs_err_pid*
 \.idea/
 
 MyTime\.iml
+
+target/MyTime/META-INF/MANIFEST\.MF
