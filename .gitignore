@@ -25,4 +25,4 @@ hs_err_pid*
 
 MyTime\.iml
 
-target/MyTime/META-INF/MANIFEST\.MF
+target/*
