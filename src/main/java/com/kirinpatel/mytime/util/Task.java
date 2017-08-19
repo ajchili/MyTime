@@ -2,13 +2,13 @@ package com.kirinpatel.mytime.util;
 
 public class Task {
 
-    private final String TITLE;
+    private String title;
     private long currentTime = 0;
     private long totalTime = 0;
     private boolean isActive = false;
 
     public Task(String title) {
-        this.TITLE = title;
+        this.title = title;
     }
 
     public void setCurrentTime(long currentTime) {
@@ -24,7 +24,7 @@ public class Task {
     }
 
     public String getTitle() {
-        return TITLE;
+        return title;
     }
 
     public long getCurrentTime() {

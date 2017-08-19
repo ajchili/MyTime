@@ -1,8 +1,7 @@
-<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <html lang="en"
-      xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <%@ page isELIgnored="false" %>
     <title>MyTime</title>
@@ -39,19 +38,25 @@
                     </th>
                 </tr>
             </thead>
-            <tbody>
-                <tr th:each="task : ${tasks}">
-                    <td th:text="${task.TITLE}">Title</td>
-                    <td th:text="${task.currentTime}">00:00:0000</td>
-                    <td th:text="${task.totalTime}">00:00:0000</td>
-                    <td>
-                        <form>
-                            <button class="btn btn-primary btn-block">Start</button>
-                            <button class="btn btn-warning btn-block">Reset</button>
-                            <button class="btn btn-danger btn-block">Remove</button>
-                        </form>
-                    </td>
-                </tr>
+            <tbody id="taskContainer">
+                <c:forEach items="${taskContainer.tasks}" var="Task" varStatus="i" begin="0">
+                    <tr class="task">
+                        <td><form:input
+                                path="taskContainer.tasks[${i.index}].title" id="title${i.index}"
+                                readonly="true"/></td>
+                        <td><form:input
+                                path="taskContainer.tasks[${i.index}].currentTime" id="currentTime${i.index}"
+                                readonly="true"/></td>
+                        <td><form:input
+                                path="taskContainer.tasks[${i.index}].totalTime" id="totalTime${i.index}"
+                                readonly="true"/></td>
+                        <td>
+                            <button id="start_stop" class="btn btn-primary btn-block">Start</button>
+                            <button id="reset" class="btn btn-warning btn-block">Reset</button>
+                            <button id="remove" class="btn btn-danger btn-block">Remove</button>
+                        </td>
+                    </tr>
+                </c:forEach>
             </tbody>
         </table>
     </div>

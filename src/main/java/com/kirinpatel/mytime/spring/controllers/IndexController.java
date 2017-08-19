@@ -1,27 +1,17 @@
 package com.kirinpatel.mytime.spring.controllers;
 
-import com.kirinpatel.mytime.util.Task;
+import com.kirinpatel.mytime.util.TaskContainer;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.ArrayList;
 
 @Controller
 public class IndexController {
 
-    private static ArrayList<Task> tasks = new ArrayList<>();
-
     @RequestMapping(path= "/")
-    public String loadIndex() {
+    public String loadIndex(ModelMap map) {
         System.out.println("Loading index.jsp...");
-        return "index";
-    }
-
-    @PostMapping("/?action")
-    public String getPost(@ModelAttribute Task task) {
-        System.out.println("Lasdawdasdawdasdawdasdawd...");
+        map.addAttribute("taskContainer", new TaskContainer());
         return "index";
     }
 }
