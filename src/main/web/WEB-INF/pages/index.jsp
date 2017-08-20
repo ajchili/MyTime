@@ -12,8 +12,16 @@
 <body onload="load()">
     <div class="jumbotron container-fluid">
         <h1 class="display-3">MyTime</h1>
-        <hr class="my-4">
         <p class="lead">A simple web based solution to keeping track of time spent on tasks.</p>
+        <hr class="my-4">
+        <ul class="nav">
+            <li class="nav-item">
+                <a class="nav-link" href="http://www.kirinpatel.com" target="_blank">More of my work</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="https://github.com/ajchili/MyTime" target="_blank">Info</a>
+            </li>
+        </ul>
     </div>
     <div class="container-fluid">
         <table class="table table-bordered table-hover table-striped">
@@ -38,8 +46,8 @@
                 <c:forEach items="${taskContainer.tasks}" var="Task" varStatus="i" begin="0">
                     <tr class="task">
                         <td><form:input cssClass="form-control" path="taskContainer.tasks[${i.index}].title" id="title${i.index}" readonly="true"/></td>
-                        <td><form:input cssClass="form-control" path="taskContainer.tasks[${i.index}].currentTime" id="currentTime${i.index}" readonly="true"/></td>
-                        <td><form:input cssClass="form-control" path="taskContainer.tasks[${i.index}].totalTime" id="totalTime${i.index}" readonly="true"/></td>
+                        <td><form:input cssClass="form-control" path="taskContainer.tasks[${i.index}].formattedCurrentTime" id="currentTime${i.index}" readonly="true"/></td>
+                        <td><form:input cssClass="form-control" path="taskContainer.tasks[${i.index}].formattedTotalTime" id="totalTime${i.index}" readonly="true"/></td>
                         <td>
                             <p hidden><form:input id="${i.index}" class="taskData" path="taskContainer.tasks[${i.index}].active" readonly="true"/></p>
                             <button id="start_stop${i.index}" class="btn btn-primary btn-block" onclick="startStopTimer(this, ${i.index})"></button>
@@ -68,7 +76,7 @@
             if (activeTimers) {
                 setTimeout(function () {
                     window.location.replace("/update");
-                }, 10000);
+                }, 3000);
             }
         }
 

@@ -3,6 +3,8 @@ package com.kirinpatel.mytime.util;
 public class Task {
 
     private String title;
+    private String formattedCurrentTime = "0:00:00";
+    private String formattedTotalTime = "0:00:00";
     private long currentTime = 0;
     private long startTime = -1;
     private long totalTime = 0;
@@ -15,6 +17,7 @@ public class Task {
     public void setCurrentTime() {
         if (startTime > 0) {
             currentTime = System.currentTimeMillis() - startTime;
+            formattedCurrentTime = formatTime(currentTime);
         }
     }
 
@@ -34,6 +37,19 @@ public class Task {
 
     public void setTotalTime(long totalTime) {
         this.totalTime = totalTime;
+        formattedTotalTime = formatTime(this.totalTime);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getFormattedCurrentTime() {
+        return formattedCurrentTime;
+    }
+
+    public String getFormattedTotalTime() {
+        return formattedTotalTime;
     }
 
     private void setActive(boolean isActive) {
@@ -41,22 +57,16 @@ public class Task {
     }
 
     public void reset() {
+        formattedCurrentTime = "0:00:0000";
+        formattedTotalTime = "0:00:0000";
         currentTime = 0;
         startTime = -1;
         totalTime = 0;
         isActive = false;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
     public long getCurrentTime() {
         return currentTime;
-    }
-
-    public long getStartTime() {
-        return startTime;
     }
 
     public long getTotalTime() {
@@ -65,5 +75,21 @@ public class Task {
 
     public boolean isActive() {
         return isActive;
+    }
+
+    /**
+     * Credit: https://github.com/caprica/vlcj-player/blob/master/src/main/java/uk/co/caprica/vlcjplayer/time/Time.java
+     *
+     * @param value Time
+     * @return Time in displayable string format
+     */
+    private String formatTime(long value) {
+        value /= 1000;
+        int hours = (int) value / 3600;
+        int remainder = (int) value - hours * 3600;
+        int minutes = remainder / 60;
+        remainder = remainder - minutes * 60;
+        int seconds = remainder;
+        return String.format("%d:%02d:%02d", hours, minutes, seconds);
     }
 }
