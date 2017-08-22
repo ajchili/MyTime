@@ -22,6 +22,9 @@ public class IndexController {
 
     @RequestMapping(path= "/{title}", method= RequestMethod.GET)
     public String addTaskToList(@PathVariable("title") String title, ModelMap map) {
+        if(title.equals("favicon")) {
+            return "index";
+        }
         System.out.println("Adding task...");
         taskContainer.addTask(new Task(title));
         map.addAttribute("taskContainer", taskContainer);
