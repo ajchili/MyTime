@@ -75,7 +75,7 @@
             }
             if (activeTimers) {
                 setTimeout(function () {
-                    window.location.replace("/update");
+                    window.location.replace("/MyTime/update");
                 }, 3000);
             }
         }
@@ -83,25 +83,25 @@
         function addTask(title) {
             if (title.length > 0) {
                 $("#newTaskName").removeClass("is-invalid");
-                window.location.replace("/" + title);
+                window.location.replace("/MyTime/" + title);
             } else {
                 $("#newTaskName").addClass("is-invalid");
             }
         }
 
         function removeTask(index) {
-            window.location.replace("/remove_" + index);
+            window.location.replace("/MyTime/remove_" + index);
         }
 
         function resetTask(index) {
-            window.location.replace("/reset_" + index);
+            window.location.replace("/MyTime/reset_" + index);
         }
 
         function startStopTimer(button, index) {
             if (button.innerHTML === 'Start') {
-                window.location.replace("/start_" + index);
+                window.location.replace("/MyTime/start_" + index);
             } else {
-                window.location.replace("/stop_" + index);
+                window.location.replace("/MyTime/stop_" + index);
             }
         }
     </script>
