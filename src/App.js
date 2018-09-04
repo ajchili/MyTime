@@ -4,6 +4,11 @@ import {
   Switch,
   Route
 } from 'react-router-dom';
+import {library} from '@fortawesome/fontawesome-svg-core';
+import {
+  faPlus,
+  faSlidersH
+} from '@fortawesome/free-solid-svg-icons';
 import {PrivateRoute} from "./Components/Routes";
 import NavBar from './Components/NavBar';
 import Home from './Components/Home';
@@ -11,6 +16,9 @@ import Profile from './Components/Profile';
 import TimeTracker from './Components/TimeTracker';
 
 const firebase = window.firebase;
+
+library.add(faPlus);
+library.add(faSlidersH);
 
 export default class App extends React.Component {
   state = {
