@@ -26,10 +26,12 @@ export default class extends Component {
             : <span>MyTime</span>
           }
         </a>
-        <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
-        </button>
+        {this.props.authenticated &&
+          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+                  aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+            <span className="navbar-toggler-icon"></span>
+          </button>
+        }
         <div className="collapse navbar-collapse" id="navbarNavDropdown">
           <ul className="navbar-nav">
             {this.props.authenticated &&
@@ -38,9 +40,9 @@ export default class extends Component {
               </li>
             }
             {this.props.authenticated &&
-            <li className="nav-item">
-              <Link className="nav-link" to={"/track"}>Track Time</Link>
-            </li>
+              <li className="nav-item">
+                <Link className="nav-link" to={"/track"}>Track Time</Link>
+              </li>
             }
             {this.props.authenticated &&
             <li className="nav-item">
