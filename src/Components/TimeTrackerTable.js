@@ -1,22 +1,52 @@
 import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
+const db = window.firebase.firestore();
+
 export default class extends Component {
   state = {
-    things: [
-      {
-        title: "Testing",
-        category: "ABC",
-        time: 0
-      }
-    ],
+    error: null,
+    activeCategories: [],
     pageSize: 10,
     currentPage: 0
   };
 
+  addCategory = () => {
+    let name = prompt('Please provide the name of the new category.');
+    if (name && name.length) {
+      db
+        .collection('users')
+        .doc(this.props.uid)
+        .collection('categories')
+        .add({
+          name
+        })
+        .then(doc => {
+          let categories = this.state.categories;
+          categories.push({
+            id: doc.id,
+            name
+          });
+          this.setState({
+            activeCategories: categories
+          });
+        })
+        .catch(err => console.error(err));
+    }
+  };
+
+  addTimer = () => {
+
+  };
+
   render() {
+    const timers = this.props.timers;
+    const categories = this.state.activeCategories
+      .concat(this.props.categories)
+      .map(category => <option value={category.id}>{category.name}</option>);
+
     return (
-      <div className="table-responsive">
+      <div>
         <table className="table table-hover">
           <thead>
             <tr>
@@ -28,58 +58,52 @@ export default class extends Component {
                 />
               </th>
               <th scope="col">
-                <select
-                  className="custom-select"
-                  value="Category"
-                >
-                  <option>Category</option>
-                  <option value="1">One</option>
-                  <option value="2">Two</option>
-                  <option value="3">Three</option>
-                </select>
+                <div className="input-group">
+                  <select
+                    className="custom-select"
+                    value="Category"
+                  >
+                    <option value="Category">Category</option>
+                    {categories}
+                  </select>
+                  <div className="input-group-append">
+                    <button
+                      className="btn btn-secondary"
+                      onClick={this.addCategory}
+                    >
+                      <FontAwesomeIcon
+                        icon={['fa', 'plus']}
+                      />
+                    </button>
+                  </div>
+                </div>
               </th>
               <th scope="col">Time</th>
               <th scope="col">
-                <button
+                <div
                   style={{
-                    marginRight: '0.5em'
+                    float: 'right'
                   }}
-                  className="btn btn-primary"
                 >
-                  <FontAwesomeIcon
-                    icon={['fa', 'plus']}
-                  />
-                </button>
-                <button
-                  style={{
-                    marginRight: '0.5em'
-                  }}
-                  className="btn btn-secondary"
-                >
-                  <FontAwesomeIcon icon={['fas', 'sliders-h']} />
-                </button>
+                  <button
+                    style={{
+                      marginRight: '0.5em'
+                    }}
+                    className="btn btn-primary"
+                  >
+                    <FontAwesomeIcon
+                      icon={['fa', 'plus']}
+                    />
+                  </button>
+                  <button className="btn btn-secondary">
+                    <FontAwesomeIcon icon={['fas', 'sliders-h']} />
+                  </button>
+                </div>
               </th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Mark</td>
-              <td>Otto</td>
-              <td>@mdo</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Jacob</td>
-              <td>Thornton</td>
-              <td>@fat</td>
-              <td></td>
-            </tr>
-            <tr>
-              <td>Larry</td>
-              <td>the Bird</td>
-              <td>@twitter</td>
-              <td></td>
-            </tr>
+          {timers}
           </tbody>
         </table>
       </div>
