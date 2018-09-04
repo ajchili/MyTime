@@ -6,10 +6,9 @@ export default class extends Component {
   render() {
     return (
       <div>
-        {!this.props.authenticated ?
-          <Lander/>
-          :
-          <Redirect to='/profile' />
+        {!this.props.authenticated
+          ? <Lander/>
+          : <Redirect to='/profile' />
         }
       </div>
     );

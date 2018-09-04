@@ -22,7 +22,7 @@ export default class extends Component {
           name
         })
         .then(doc => {
-          let categories = this.state.categories;
+          let categories = this.state.activeCategories;
           categories.push({
             id: doc.id,
             name
@@ -43,7 +43,7 @@ export default class extends Component {
     const timers = this.props.timers;
     const categories = this.state.activeCategories
       .concat(this.props.categories)
-      .map(category => <option value={category.id}>{category.name}</option>);
+      .map(category => <option key={category.id} value={category.id}>{category.name}</option>);
 
     return (
       <div>
