@@ -7,7 +7,11 @@ import {
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {
   faPlus,
-  faSlidersH
+  faSlidersH,
+  faPlay,
+  faPause,
+  faEdit,
+  faTrash
 } from '@fortawesome/free-solid-svg-icons';
 import {PrivateRoute} from "./Components/Routes";
 import NavBar from './Components/NavBar';
@@ -19,6 +23,10 @@ const firebase = window.firebase;
 
 library.add(faPlus);
 library.add(faSlidersH);
+library.add(faPlay);
+library.add(faPause);
+library.add(faEdit);
+library.add(faTrash);
 
 export default class App extends React.Component {
   state = {
@@ -27,6 +35,9 @@ export default class App extends React.Component {
   };
 
   componentDidMount() {
+    const settings = {timestampsInSnapshots: true};
+    firebase.firestore().settings(settings);
+
     firebase.auth().onAuthStateChanged(user => {
       if (user) {
         this.setState({

@@ -13,6 +13,26 @@ export default class extends Component {
     firebase.firestore()
       .collection('users')
       .doc(this.props.user.uid)
+      .collection('timers')
+      .get()
+      .then(querySnapshot => {
+        let timers = [];
+
+        querySnapshot.forEach(doc => {
+          timers.push({
+            id: doc.id,
+            title: doc.data().title
+          });
+        });
+
+        this.setState({
+          timers
+        });
+      });
+
+    firebase.firestore()
+      .collection('users')
+      .doc(this.props.user.uid)
       .collection('categories')
       .get()
       .then(querySnapshot => {
