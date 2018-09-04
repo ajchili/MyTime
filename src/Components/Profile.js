@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 
 export default class extends Component {
   render() {
-    let firstName = this.props.user.displayName.split(' ')[0];
+    const firstName = this.props.user.displayName.split(' ')[0];
+
     return (
       <div>
         <div className="jumbotron">
