@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import {Redirect} from 'react-router-dom';
 import Lander from './Lander';
 
-class App extends Component {
+export default class extends Component {
   render() {
     return (
       <div>
@@ -15,5 +15,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;

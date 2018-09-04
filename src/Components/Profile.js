@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 
-class App extends Component {
+export default class extends Component {
   render() {
     let firstName = this.props.user.displayName.split(' ')[0];
     return (
@@ -13,5 +13,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;
