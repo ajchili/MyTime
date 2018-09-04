@@ -38,7 +38,10 @@ export default class App extends React.Component {
     return (
       <Router>
         <div>
-          <NavBar authenticated={this.state.authenticated}/>
+          <NavBar
+            authenticated={this.state.authenticated}
+            photoURL={this.state.user ? this.state.user.photoURL : null}
+          />
           <Switch>
             <PrivateRoute
               exact
