@@ -55,17 +55,15 @@ export default class App extends React.Component {
               exact
               path="/profile"
               authenticated={this.state.authenticated}
-              component={(props) => <Profile authenticated={this.state.authenticated} user={this.state.user} />}
+              component={props => <Profile authenticated={this.state.authenticated} user={this.state.user} />}
             />
             <PrivateRoute
               exact
               path="/track"
               authenticated={this.state.authenticated}
-              component={(props) => <TimeTracker authenticated={this.state.authenticated} user={this.state.user} />}
+              component={props => <TimeTracker authenticated={this.state.authenticated} user={this.state.user} />}
             />
-            <Route
-              path="/"
-              render={(props) => <Home authenticated={this.state.authenticated} user={this.state.user} />}
+            <Route render={props => <Home authenticated={this.state.authenticated} user={this.state.user} />}
             />
           </Switch>
         </div>
