@@ -2,6 +2,35 @@ import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 
 const db = window.firebase.firestore();
+const $ = window.$;
+
+class CategorySelector extends Component {
+  render() {
+    return (
+      <div className="input-group">
+        <select
+          id={this.props.selectorId}
+          className="custom-select"
+        >
+          <option value="Category">Category</option>
+          {this.props.categories}
+        </select>
+        <div className="input-group-append">
+          <button
+            className="btn btn-secondary"
+            data-dismiss="modal"
+            data-toggle="modal"
+            data-target="#createCategoryModal"
+          >
+            <FontAwesomeIcon
+              icon={['fa', 'plus']}
+            />
+          </button>
+        </div>
+      </div>
+    )
+  }
+}
 
 export default class extends Component {
   state = {
@@ -13,20 +42,21 @@ export default class extends Component {
   };
 
   addCategory = () => {
-    let name = prompt('Please provide the name of the new category.');
-    if (name && name.length) {
+    let name = document.getElementById('createCategoryName');
+    if (name.value && name.value.length) {
       db
         .collection('users')
         .doc(this.props.uid)
         .collection('categories')
         .add({
-          name
+          name: name.value
         })
         .then(doc => {
+          $('#createCategoryModal').modal('hide');
           let categories = this.state.activeCategories;
           categories.push({
             id: doc.id,
-            name
+            name: name.value
           });
           this.setState({
             activeCategories: categories
@@ -37,27 +67,36 @@ export default class extends Component {
   };
 
   addTimer = () => {
-    let title = prompt('Please provide the title of the new timer.');
-    if (title && title.length) {
+    let title = document.getElementById('createTimerTitle');
+    if (title.value && title.value.length) {
+      let category = document.getElementById('createTimerCategory');
+      let categoryValue = category.value !== 'Category' ? category.value : null;
       db
         .collection('users')
         .doc(this.props.uid)
         .collection('timers')
         .add({
-          title
+          title: title.value,
+          category: categoryValue,
+          time: 0
         })
         .then(doc => {
+          $('#createTimerModal').modal('hide');
           let timers = this.state.activeTimers;
           timers.push({
             id: doc.id,
-            title,
-            time: 0
+            title: title.value,
+            category: categoryValue,
           });
+          title.value = "";
+          category.value = "Category";
           this.setState({
             activeTimers: timers
           });
         })
         .catch(err => console.error(err));
+    } else {
+
     }
   };
 
@@ -142,25 +181,7 @@ export default class extends Component {
                 />
               </th>
               <th scope="col">
-                <div className="input-group">
-                  <select
-                    className="custom-select"
-                    value="Category"
-                  >
-                    <option value="Category">Category</option>
-                    {categories}
-                  </select>
-                  <div className="input-group-append">
-                    <button
-                      className="btn btn-secondary"
-                      onClick={this.addCategory}
-                    >
-                      <FontAwesomeIcon
-                        icon={['fa', 'plus']}
-                      />
-                    </button>
-                  </div>
-                </div>
+                <CategorySelector categories={categories}/>
               </th>
               <th scope="col">Time</th>
               <th scope="col">
@@ -174,7 +195,8 @@ export default class extends Component {
                       marginRight: '0.5em'
                     }}
                     className="btn btn-primary"
-                    onClick={this.addTimer}
+                    data-toggle="modal"
+                    data-target="#createTimerModal"
                   >
                     <FontAwesomeIcon
                       icon={['fa', 'plus']}
@@ -191,6 +213,83 @@ export default class extends Component {
           {timers}
           </tbody>
         </table>
+
+        <div className="modal fade" id="createCategoryModal" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Create Category</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <form>
+                  <div className="form-group">
+                    <label>Name</label>
+                    <input
+                      id="createCategoryName"
+                      className="form-control"
+                      placeholder="Title"
+                    />
+                  </div>
+                </form>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.addCategory}
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="modal fade" id="createTimerModal" tabIndex="-1" role="dialog" aria-hidden="true">
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Create Timer</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <form>
+                  <div className="form-group">
+                    <label>Title</label>
+                    <input
+                      id="createTimerTitle"
+                      className="form-control"
+                      placeholder="Title"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Category</label>
+                    <CategorySelector
+                      selectorId="createTimerCategory"
+                      categories={categories}
+                    />
+                  </div>
+                </form>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={this.addTimer}
+                >
+                  Create
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
