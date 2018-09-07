@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import TimeTrackerTableRow from './TimeTrackerTableRow';
 
 const db = window.firebase.firestore();
 const $ = window.$;
@@ -33,14 +34,6 @@ class CategorySelector extends Component {
 }
 
 export default class extends Component {
-  state = {
-    error: null,
-    activeTimers: [],
-    activeCategories: [],
-    pageSize: 10,
-    currentPage: 0
-  };
-
   addCategory = () => {
     let name = document.getElementById('createCategoryName');
     if (name.value && name.value.length) {
@@ -51,17 +44,7 @@ export default class extends Component {
         .add({
           name: name.value
         })
-        .then(doc => {
-          $('#createCategoryModal').modal('hide');
-          let categories = this.state.activeCategories;
-          categories.push({
-            id: doc.id,
-            name: name.value
-          });
-          this.setState({
-            activeCategories: categories
-          });
-        })
+        .then(() => $('#createCategoryModal').modal('hide'))
         .catch(err => console.error(err));
     }
   };
@@ -80,137 +63,138 @@ export default class extends Component {
           category: categoryValue,
           time: 0
         })
-        .then(doc => {
-          $('#createTimerModal').modal('hide');
-          let timers = this.state.activeTimers;
-          timers.push({
-            id: doc.id,
-            title: title.value,
-            category: categoryValue,
-          });
-          title.value = "";
-          category.value = "Category";
-          this.setState({
-            activeTimers: timers
-          });
-        })
+        .then(() => $('#createTimerModal').modal('hide'))
         .catch(err => console.error(err));
     } else {
 
     }
   };
 
-  deleteTimer = (id, title) => {
+  deleteTimer = id => {
     db
       .collection('users')
       .doc(this.props.uid)
       .collection('timers')
       .doc(id)
       .delete()
-      .then(() => {
-        let timers = this.state.activeTimers.filter(timer => timer.id !== id);
-        this.setState({
-          activeTimers: timers
-        });
-      })
+      .then(() => this.props.actions.refreshTimers())
       .catch(err => {
         console.error(err);
       });
   };
 
+  startTimer = id => {
+    db
+      .collection('users')
+      .doc(this.props.uid)
+      .collection('timers')
+      .doc(id)
+      .update({
+        timeStarted: new Date().getTime()
+      });
+  };
+
+  stopTimer = (id, time, timeStarted) => {
+    db
+      .collection('users')
+      .doc(this.props.uid)
+      .collection('timers')
+      .doc(id)
+      .update({
+        time: time + new Date().getTime() - timeStarted,
+        timeStarted: null
+      });
+  };
+
   render() {
-    const timers = this.state.activeTimers
-      .concat(this.props.timers)
-      .map(timer =>
-        <tr key={timer.id}>
-          <td>{timer.title}</td>
-          <td></td>
-          <td></td>
-          <td>
-            <div
-              style={{
-                float: 'right'
-              }}
-            >
-              <button
-                style={{
-                  marginRight: '0.5em'
-                }}
-                className="btn btn-primary btn-sm"
-              >
-                <FontAwesomeIcon
-                  icon={['fa', 'play']}
-                />
-              </button>
-              <button
-                style={{
-                  marginRight: '0.5em'
-                }}
-                className="btn btn-secondary btn-sm"
-              >
-                <FontAwesomeIcon
-                  icon={['fa', 'edit']}
-                />
-              </button>
-              <button
-                className="btn btn-danger btn-sm"
-                onClick={() => this.deleteTimer(timer.id, timer.title)}
-              >
-                <FontAwesomeIcon
-                  icon={['fa', 'trash']}
-                />
-              </button>
-            </div>
-          </td>
-        </tr>
-      );
-    const categories = this.state.activeCategories
-      .concat(this.props.categories)
+    const categories = this.props.categories
       .map(category => <option key={category.id} value={category.id}>{category.name}</option>);
+    const timers = this.props.timers
+      .map(timer =>
+        <TimeTrackerTableRow
+          timer={timer}
+          actions={{
+            startTimer: () => {
+              this.startTimer(timer.id);
+              this.props.actions.refreshTimers();
+            },
+            stopTimer: () => {
+              this.stopTimer(timer.id, timer.time, timer.timeStarted);
+              this.props.actions.refreshTimers();
+            },
+            deleteTimer: () => {
+              this.deleteTimer(timer.id);
+              this.props.actions.refreshTimers();
+            },
+          }}
+        />
+      );
 
     return (
       <div>
         <table className="table table-hover">
           <thead>
-            <tr>
-              <th scope="col">
-                <input
-                  className="form-control"
-                  type="text"
-                  placeholder="Title"
-                />
-              </th>
-              <th scope="col">
-                <CategorySelector categories={categories}/>
-              </th>
-              <th scope="col">Time</th>
-              <th scope="col">
-                <div
+          <tr>
+            <th
+              scope="col"
+              style={{
+                width: '25%'
+              }}
+            >
+              <input
+                className="form-control"
+                type="text"
+                placeholder="Title"
+              />
+            </th>
+            <th
+              scope="col"
+              style={{
+                width: '25%'
+              }}
+            >
+              <CategorySelector categories={categories}/>
+            </th>
+            <th
+              scope="col"
+              style={{
+                width: '25%'
+              }}
+            >
+              Time
+            </th>
+            <th
+              scope="col"
+              style={{
+                width: '25%'
+              }}
+            >
+              <div
+                style={{
+                  float: 'right'
+                }}
+              >
+                <button
                   style={{
-                    float: 'right'
+                    marginRight: '0.5em'
                   }}
+                  className="btn btn-primary"
+                  data-toggle="modal"
+                  data-target="#createTimerModal"
                 >
-                  <button
-                    style={{
-                      marginRight: '0.5em'
-                    }}
-                    className="btn btn-primary"
-                    data-toggle="modal"
-                    data-target="#createTimerModal"
-                  >
-                    <FontAwesomeIcon
-                      icon={['fa', 'plus']}
-                    />
-                  </button>
-                  <button className="btn btn-secondary">
-                    <FontAwesomeIcon icon={['fas', 'sliders-h']} />
-                  </button>
-                </div>
-              </th>
-            </tr>
+                  <FontAwesomeIcon
+                    icon={['fa', 'plus']}
+                  />
+                </button>
+                <button className="btn btn-secondary">
+                  <FontAwesomeIcon icon={['fas', 'sliders-h']}/>
+                </button>
+              </div>
+            </th>
+          </tr>
           </thead>
           <tbody>
-          {timers}
+            {timers}
           </tbody>
         </table>
 
@@ -282,7 +266,10 @@ export default class extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={this.addTimer}
+                  onClick={() => {
+                    this.addTimer();
+                    this.props.actions.refreshTimers();
+                  }}
                 >
                   Create
                 </button>

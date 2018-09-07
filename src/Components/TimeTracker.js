@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import Table from './TimeTrackerTable';
 
 const firebase = window.firebase;
+const refreshInterval = 10;
+let interval;
 
 export default class extends Component {
   state = {
@@ -10,6 +12,13 @@ export default class extends Component {
   };
 
   componentDidMount() {
+    this.refreshTimers();
+    this.refreshCategories();
+  }
+
+  refreshTimers = () => {
+    clearInterval(interval);
+
     firebase.firestore()
       .collection('users')
       .doc(this.props.user.uid)
@@ -17,10 +26,18 @@ export default class extends Component {
       .get()
       .then(querySnapshot => {
         let timers = [];
+        let requiresUpdate = false;
+        let lastCheck = refreshInterval;
 
         querySnapshot.forEach(doc => {
+          if (doc.data().timeStarted) {
+            requiresUpdate = true;
+          }
+
           timers.push({
             id: doc.id,
+            time: doc.data().time,
+            timeStarted: doc.data().timeStarted,
             title: doc.data().title
           });
         });
@@ -28,8 +45,23 @@ export default class extends Component {
         this.setState({
           timers
         });
-      });
 
+        if (requiresUpdate) {
+          interval = setInterval(() => {
+            if (lastCheck) {
+              lastCheck--;
+              this.setState({
+                timers
+              });
+            } else {
+              this.refreshTimers();
+            }
+          }, 500);
+        }
+      });
+  };
+
+  refreshCategories = () => {
     firebase.firestore()
       .collection('users')
       .doc(this.props.user.uid)
@@ -49,7 +81,7 @@ export default class extends Component {
           categories
         });
       });
-  }
+  };
 
   render() {
     return (
@@ -58,6 +90,10 @@ export default class extends Component {
           timers={this.state.timers}
           categories={this.state.categories}
           uid={this.props.user.uid}
+          actions={{
+            refreshCategories: this.refreshCategories,
+            refreshTimers: this.refreshTimers
+          }}
         />
       </div>
     );
