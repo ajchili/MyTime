@@ -27,10 +27,15 @@ export default class extends Component {
           }
         </a>
         {this.props.authenticated &&
-          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-                  aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#navbarNavDropdown"
+            aria-controls="navbarNavDropdown"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          />
         }
         <div className="collapse navbar-collapse" id="navbarNavDropdown">
           <ul className="navbar-nav">
@@ -44,15 +49,17 @@ export default class extends Component {
                 <Link className="nav-link" to={"/track"}>Track Time</Link>
               </li>
             }
-            {this.props.authenticated &&
-            <li className="nav-item">
-              <a
-                className="nav-link"
-                onClick={this.logout}
-              >Logout</a>
-            </li>
-            }
           </ul>
+          {this.props.authenticated &&
+            <ul className="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+              <li className="nav-item">
+                <a
+                  className="nav-link text-danger"
+                  onClick={this.logout}
+                >Logout</a>
+              </li>
+            </ul>
+          }
         </div>
       </nav>
     );
