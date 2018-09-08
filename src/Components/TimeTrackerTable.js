@@ -1,37 +1,11 @@
 import React, {Component} from 'react';
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import TimeTrackerTableRow from './TimeTrackerTableRow';
+import CategorySelector from './CategorySelector';
+import CreateTimeTrackerModal from './CreateTimeTrackerModal';
 
 const db = window.firebase.firestore();
 const $ = window.$;
-
-class CategorySelector extends Component {
-  render() {
-    return (
-      <div className="input-group">
-        <select
-          id={this.props.selectorId}
-          className="custom-select"
-        >
-          <option value="Category">Category</option>
-          {this.props.categories}
-        </select>
-        <div className="input-group-append">
-          <button
-            className="btn btn-secondary"
-            data-dismiss="modal"
-            data-toggle="modal"
-            data-target="#createCategoryModal"
-          >
-            <FontAwesomeIcon
-              icon={['fa', 'plus']}
-            />
-          </button>
-        </div>
-      </div>
-    )
-  }
-}
 
 export default class extends Component {
   addCategory = () => {
@@ -49,21 +23,22 @@ export default class extends Component {
     }
   };
 
-  addTimer = () => {
-    let title = document.getElementById('createTimerTitle');
-    if (title.value && title.value.length) {
-      let category = document.getElementById('createTimerCategory');
-      let categoryValue = category.value !== 'Category' ? category.value : null;
+  addTimer = (title, category = null) => {
+    console.log(title, category)
+    if (title && title.length) {
       db
         .collection('users')
         .doc(this.props.uid)
         .collection('timers')
         .add({
-          title: title.value,
-          category: categoryValue,
+          title: title,
+          category: category,
           time: 0
         })
-        .then(() => $('#createTimerModal').modal('hide'))
+        .then(() => {
+          $('#createTimerModal').modal('hide');
+          this.props.actions.refreshTimers();
+        })
         .catch(err => console.error(err));
     } else {
 
@@ -225,51 +200,9 @@ export default class extends Component {
                 <button
                   type="button"
                   className="btn btn-primary"
-                  onClick={this.addCategory}
-                >
-                  Create
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="modal fade" id="createTimerModal" tabIndex="-1" role="dialog" aria-hidden="true">
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Create Timer</h5>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <form>
-                  <div className="form-group">
-                    <label>Title</label>
-                    <input
-                      id="createTimerTitle"
-                      className="form-control"
-                      placeholder="Title"
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label>Category</label>
-                    <CategorySelector
-                      selectorId="createTimerCategory"
-                      categories={categories}
-                    />
-                  </div>
-                </form>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button
-                  type="button"
-                  className="btn btn-primary"
                   onClick={() => {
-                    this.addTimer();
-                    this.props.actions.refreshTimers();
+                    this.addCategory();
+                    this.props.actions.refreshCategories();
                   }}
                 >
                   Create
@@ -278,6 +211,13 @@ export default class extends Component {
             </div>
           </div>
         </div>
+
+        <CreateTimeTrackerModal
+          categories={categories}
+          actions={{
+            addTimer: this.addTimer
+          }}
+        />
       </div>
     );
   }
