@@ -113,6 +113,7 @@ export default class extends Component {
       .map(timer =>
         <TimeTrackerTableRow
           timer={timer}
+          category={this.props.categories.find(category => category.id === timer.category)}
           actions={{
             startTimer: () => {
               this.startTimer(timer.id);

@@ -10,7 +10,7 @@ export default class extends Component {
     return (
       <tr key={this.props.timer.id}>
         <td>{this.props.timer.title}</td>
-        <td></td>
+        <td>{this.props.category ? this.props.category.name : ''}</td>
         <td>
           {hours > 0 &&
             <span><strong>{hours}</strong> hours, </span>

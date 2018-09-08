@@ -36,6 +36,7 @@ export default class extends Component {
 
           timers.push({
             id: doc.id,
+            category: doc.data().category,
             time: doc.data().time,
             timeStarted: doc.data().timeStarted,
             title: doc.data().title
