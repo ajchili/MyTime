@@ -13,7 +13,7 @@ export default class extends Component {
         <td>{this.props.category ? this.props.category.name : ''}</td>
         <td>
           {hours > 0 &&
-          <span><strong>{hours}</strong> hours{minutes > 0 || seconds > 0 && <span>,</span>} </span>
+          <span><strong>{hours}</strong> hours{(minutes > 0 || seconds > 0) && <span>,</span>} </span>
           }
           {minutes > 0 &&
             <span><strong>{minutes}</strong> minutes{seconds > 0 && <span>,</span>} </span>
