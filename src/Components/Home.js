@@ -8,7 +8,7 @@ export default class extends Component {
       <div>
         {!this.props.authenticated
           ? <Lander/>
-          : <Redirect to='/profile' />
+          : <Redirect to='/track' />
         }
       </div>
     );

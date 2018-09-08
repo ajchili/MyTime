@@ -74,8 +74,7 @@ export default class App extends React.Component {
               authenticated={this.state.authenticated}
               component={props => <TimeTracker authenticated={this.state.authenticated} user={this.state.user} />}
             />
-            <Route render={props => <Home authenticated={this.state.authenticated} user={this.state.user} />}
-            />
+            <Route render={props => <Home authenticated={this.state.authenticated} user={this.state.user} />} />
           </Switch>
         </div>
       </Router>
