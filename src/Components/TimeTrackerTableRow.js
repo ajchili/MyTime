@@ -5,7 +5,7 @@ export default class extends Component {
   render() {
     let time = Math.floor(((this.props.timer.timeStarted ? new Date().getTime() - this.props.timer.timeStarted : 0) + this.props.timer.time) / 1000);
     let hours = Math.floor(time / (60 * 60));
-    let minutes = Math.floor(time / 60);
+    let minutes = Math.floor(time / 60) % 60;
     let seconds = time % 60;
     return (
       <tr key={this.props.timer.id}>
